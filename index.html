@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>College Resource Exchange</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f7fa; margin: 0; }
-    header { background: #2b6777; color: #fff; padding: 15px; text-align: center; font-size: 22px; }
-    nav { display: flex; justify-content: center; background: #c8d8e4; padding: 10px; }
-    nav button { background: #2b6777; color: white; border: none; padding: 10px 20px; margin: 0 5px; border-radius: 6px; cursor: pointer; }
-    nav button.active { background: #52ab98; }
-    .container { max-width: 900px; margin: auto; padding: 20px; }
-    .tab { display: none; } .tab.active { display: block; }
-    form input, form select, form textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; }
-    form button { margin-top: 10px; padding: 10px 20px; background: #52ab98; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .item, .note { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); }
-    .item h3, .note h3 { margin: 0; color: #2b6777; }
-    #auth { text-align: center; margin: 20px; }
-    #auth input { margin: 5px; padding: 8px; }
+    body { font-family: Arial, sans-serif; background: #f5f7fa; margin:0; }
+    header { background: #2b6777; color: #fff; padding: 15px; text-align:center; font-size:22px; }
+    nav { display:flex; justify-content:center; background:#c8d8e4; padding:10px; }
+    nav button { background:#2b6777; color:white; border:none; padding:10px 20px; margin:0 5px; border-radius:6px; cursor:pointer; }
+    nav button.active { background:#52ab98; }
+    .container { max-width:900px; margin:auto; padding:20px; }
+    .tab { display:none; } .tab.active { display:block; }
+    form input, form textarea { width:100%; padding:8px; margin:5px 0; border:1px solid #ccc; border-radius:5px; }
+    form button { margin-top:10px; padding:10px 20px; background:#52ab98; color:white; border:none; border-radius:5px; cursor:pointer; }
+    .item, .note { background:white; padding:15px; margin:10px 0; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    .item h3, .note h3 { margin:0; color:#2b6777; }
+    #auth { text-align:center; margin:20px; }
+    #auth input { margin:5px; padding:8px; }
   </style>
 </head>
 <body>
@@ -40,7 +40,7 @@
 
 <div class="container">
 
-  <!-- Marketplace Tab -->
+  <!-- Marketplace -->
   <div id="marketplace" class="tab active">
     <h2>Sell an Item</h2>
     <form id="itemForm">
@@ -53,7 +53,7 @@
     <div id="itemList"></div>
   </div>
 
-  <!-- Notes Tab -->
+  <!-- Notes -->
   <div id="notes" class="tab">
     <h2>Upload Notes</h2>
     <form id="noteForm">
@@ -71,19 +71,19 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // TODO: Replace this with your Firebase config
+  // Your Firebase config
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyADFtneeIYeJPwCsAXE7Qdq5WQisyKNdS4",
+    authDomain: "college-resource-exchange.firebaseapp.com",
+    projectId: "college-resource-exchange",
+    storageBucket: "college-resource-exchange.firebasestorage.app",
+    messagingSenderId: "345022811137",
+    appId: "1:345022811137:web:381f0239fd645a650e0400",
+    measurementId: "G-311H1B5WZY"
   };
 
   // Initialize Firebase
@@ -147,7 +147,7 @@
   });
 
   function loadItems() {
-    onSnapshot(collection(db, "items"), (snapshot) => {
+    onSnapshot(collection(db, "items"), snapshot => {
       itemList.innerHTML = "";
       snapshot.forEach(doc => {
         const item = doc.data();
@@ -175,7 +175,7 @@
   });
 
   function loadNotes() {
-    onSnapshot(collection(db, "notes"), (snapshot) => {
+    onSnapshot(collection(db, "notes"), snapshot => {
       noteList.innerHTML = "";
       snapshot.forEach(doc => {
         const note = doc.data();
@@ -191,3 +191,5 @@
 
 </body>
 </html>
+
+
