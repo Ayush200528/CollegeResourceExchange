@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>College Resource Exchange</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f7fa; margin:0; }
-    header { background: #2b6777; color: #fff; padding: 15px; text-align:center; font-size:22px; }
-    nav { display:flex; justify-content:center; background:#c8d8e4; padding:10px; }
-    nav button { background:#2b6777; color:white; border:none; padding:10px 20px; margin:0 5px; border-radius:6px; cursor:pointer; }
-    nav button.active { background:#52ab98; }
-    .container { max-width:900px; margin:auto; padding:20px; }
-    .tab { display:none; } .tab.active { display:block; }
-    form input, form textarea { width:100%; padding:8px; margin:5px 0; border:1px solid #ccc; border-radius:5px; }
-    form button { margin-top:10px; padding:10px 20px; background:#52ab98; color:white; border:none; border-radius:5px; cursor:pointer; }
-    .item, .note { background:white; padding:15px; margin:10px 0; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    .item h3, .note h3 { margin:0; color:#2b6777; }
-    #auth { text-align:center; margin:20px; }
-    #auth input { margin:5px; padding:8px; }
+    body { font-family: Arial, sans-serif; background: #f5f7fa; margin: 0; }
+    header { background: #2b6777; color: #fff; padding: 15px; text-align: center; font-size: 22px; }
+    nav { display: flex; justify-content: center; background: #c8d8e4; padding: 10px; }
+    nav button { background: #2b6777; color: white; border: none; padding: 10px 20px; margin: 0 5px; border-radius: 6px; cursor: pointer; }
+    nav button.active { background: #52ab98; }
+    .container { max-width: 900px; margin: auto; padding: 20px; }
+    .tab { display: none; } .tab.active { display: block; }
+    form input, form select, form textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; }
+    form button { margin-top: 10px; padding: 10px 20px; background: #52ab98; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .item, .note { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); }
+    .item h3, .note h3 { margin: 0; color: #2b6777; }
+    #auth { text-align: center; margin: 20px; }
+    #auth input { margin: 5px; padding: 8px; }
   </style>
 </head>
 <body>
@@ -40,7 +40,7 @@
 
 <div class="container">
 
-  <!-- Marketplace -->
+  <!-- Marketplace Tab -->
   <div id="marketplace" class="tab active">
     <h2>Sell an Item</h2>
     <form id="itemForm">
@@ -53,7 +53,7 @@
     <div id="itemList"></div>
   </div>
 
-  <!-- Notes -->
+  <!-- Notes Tab -->
   <div id="notes" class="tab">
     <h2>Upload Notes</h2>
     <form id="noteForm">
@@ -71,125 +71,24 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Correct Firebase config
+  // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyADFtneeIYeJPwCsAXE7Qdq5WQisyKNdS4",
-    authDomain: "college-resource-exchange.firebaseapp.com",
-    projectId: "college-resource-exchange",
-    storageBucket: "college-resource-exchange.appspot.com", // ✅ corrected
-    messagingSenderId: "345022811137",
-    appId: "1:345022811137:web:381f0239fd645a650e0400",
-    measurementId: "G-311H1B5WZY"
+    apiKey: "AIzaSyCT4kuTkq8f6MexYkHLO56bz5uQTanJdvk",
+    authDomain: "college-70c49.firebaseapp.com",
+    projectId: "college-70c49",
+    storageBucket: "college-70c49.firebasestorage.app",
+    messagingSenderId: "257161869711",
+    appId: "1:257161869711:web:9b305fed2de934893533fa"
   };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // Authentication
-  window.register = () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-    createUserWithEmailAndPassword(auth, email, pass)
-      .catch(e => alert(e.message));
-  };
-
-  window.login = () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-    signInWithEmailAndPassword(auth, email, pass)
-      .catch(e => alert(e.message));
-  };
-
-  window.logout = () => {
-    signOut(auth);
-  };
-
-  onAuthStateChanged(auth, user => {
-    if(user){
-      document.getElementById("auth").style.display = "none";
-      document.getElementById("navbar").style.display = "flex";
-      loadItems();
-      loadNotes();
-    } else {
-      document.getElementById("auth").style.display = "block";
-      document.getElementById("navbar").style.display = "none";
-    }
-  });
-
-  // Tabs
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  const tabs = document.querySelectorAll(".tab");
-  tabBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      tabBtns.forEach(b => b.classList.remove("active"));
-      tabs.forEach(t => t.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById(btn.dataset.tab).classList.add("active");
-    });
-  });
-
-  // Marketplace
-  const itemForm = document.getElementById("itemForm");
-  const itemList = document.getElementById("itemList");
-
-  itemForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    await addDoc(collection(db, "items"), {
-      name: document.getElementById("itemName").value,
-      price: document.getElementById("itemPrice").value,
-      desc: document.getElementById("itemDesc").value
-    });
-    itemForm.reset();
-  });
-
-  function loadItems() {
-    onSnapshot(collection(db, "items"), snapshot => {
-      itemList.innerHTML = "";
-      snapshot.forEach(doc => {
-        const item = doc.data();
-        const div = document.createElement("div");
-        div.className = "item";
-        div.innerHTML = `<h3>${item.name} - $${item.price}</h3><p>${item.desc}</p>`;
-        itemList.appendChild(div);
-      });
-    });
-  }
-
-  // Notes
-  const noteForm = document.getElementById("noteForm");
-  const noteList = document.getElementById("noteList");
-
-  noteForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    await addDoc(collection(db, "notes"), {
-      subject: document.getElementById("subject").value,
-      classYear: document.getElementById("classYear").value,
-      professor: document.getElementById("professor").value,
-      content: document.getElementById("noteContent").value
-    });
-    noteForm.reset();
-  });
-
-  function loadNotes() {
-    onSnapshot(collection(db, "notes"), snapshot => {
-      noteList.innerHTML = "";
-      snapshot.forEach(doc => {
-        const note = doc.data();
-        const div = document.createElement("div");
-        div.className = "note";
-        div.innerHTML = `<h3>${note.subject} (${note.classYear}) - ${note.professor}</h3>
-                         <p>${note.content}</p>`;
-        noteList.appendChild(div);
-      });
-    });
-  }
-
 </script>
+
 </body>
 </html>
